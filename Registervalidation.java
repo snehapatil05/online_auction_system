@@ -77,8 +77,8 @@ public class Registervalidation extends HttpServlet {
 		request.setAttribute("password2", password2);
 		request.setAttribute("category", category);
 		
-		System.out.println("Forwarding from CalculatorController to View!!");
-		request.getRequestDispatcher("result.jsp").forward(request, response);
+		System.out.println("Forwarding from Registervalidations to UserDAO!!");
+		request.getRequestDispatcher("UserDAO.java").forward(request, response);
 		
 	}
 
