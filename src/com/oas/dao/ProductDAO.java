@@ -19,7 +19,7 @@ public class ProductDAO {
 		this.connection = connection;
 	}
 
-	public void saveProduct(Product product) throws InsertFailedException {
+	public void addProduct(Product product) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 		
 		try {
@@ -62,7 +62,7 @@ public class ProductDAO {
 		}
 	}
 	
-	public void removeProduct(int pid) throws InsertFailedException {
+	public void deleteProduct(int pid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
