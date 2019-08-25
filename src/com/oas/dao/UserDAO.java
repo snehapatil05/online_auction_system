@@ -22,7 +22,7 @@ public class UserDAO {
 		this.connection = connection;
 	}
 
-	public void registerUser(User user) throws InsertFailedException, UserAlreadyExistException {
+	public void addUser(User user) throws InsertFailedException, UserAlreadyExistException {
 		PreparedStatement preparedStatement = null;
 		
 		try {
@@ -71,7 +71,7 @@ public class UserDAO {
 		}
 	}
 	
-	public void removeUser(int uid) throws InsertFailedException {
+	public void deleteUser(int uid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
