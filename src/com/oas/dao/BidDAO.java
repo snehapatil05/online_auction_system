@@ -17,7 +17,7 @@ public class BidDAO {
 		this.connection = connection;
 	}
 
-	public void saveBid(Bid bid) throws InsertFailedException {
+	public void addBid(Bid bid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 		
 		try {
@@ -55,7 +55,7 @@ public class BidDAO {
 		}
 	}
 	
-	public void removeBid(int bid) throws InsertFailedException {
+	public void deleteBid(int bid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
