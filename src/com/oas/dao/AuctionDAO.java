@@ -18,7 +18,7 @@ public class AuctionDAO {
 		this.connection = connection;
 	}
 
-	public void saveAuction(Auction auction) throws InsertFailedException {
+	public void addAuction(Auction auction) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 		
 		try {
@@ -40,7 +40,8 @@ public class AuctionDAO {
 		}
 	}
 	
-	public void updateAuctionBySeqNumber(Auction auction) throws InsertFailedException {
+	//Update Auction by SeqNumber
+	public void updateAuction(Auction auction) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
@@ -64,7 +65,7 @@ public class AuctionDAO {
 	}
 	
 	
-	public void removeAuction(int seqNo) throws InsertFailedException {
+	public void deleteAuction(int seqNo) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
@@ -108,7 +109,7 @@ public class AuctionDAO {
 
 	}
 
-	public List<Auction> selectAuctionsBySeqNumber(int seqNo) throws DataAccessException {
+	public List<Auction> selectAuctionBySequenceNo(int seqNo) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<Auction> auctions = new ArrayList<>();
@@ -137,7 +138,7 @@ public class AuctionDAO {
 
 	}
 	
-	public List<Auction> selectAuctionsByProductID(int prodID) throws DataAccessException {
+	public List<Auction> selectAuctionByProductID(int prodID) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<Auction> auctions = new ArrayList<>();
