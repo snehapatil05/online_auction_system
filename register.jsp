@@ -10,7 +10,7 @@
     <h2>Register</h2>
   </div>
   
-  <form method="post" action="">
+  <form method="post" action="Resistervalidation.java">
    
     <div class="input-group">
       <label>Name</label>
@@ -43,6 +43,11 @@
     <div class="input-group">
       <label>Confirm password</label>
       <input type="password" name="password2" required>
+    </div>
+    
+    <div class="input-group">
+      <label>Address</label>
+      <input type="text" name="address" required >
     </div>
     
       <label>Type of user</label>
