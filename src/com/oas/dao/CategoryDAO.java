@@ -16,7 +16,7 @@ public class CategoryDAO {
 		this.connection = connection;
 	}
 
-	public void saveCategory(Category category) throws InsertFailedException {
+	public void addCategory(Category category) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 		
 		try {
@@ -51,7 +51,7 @@ public class CategoryDAO {
 		}
 	}
 	
-	public void removeCategory(int cid) throws InsertFailedException {
+	public void deleteCategory(int cid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
 		try {
