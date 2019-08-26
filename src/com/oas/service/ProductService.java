@@ -131,9 +131,9 @@ public class ProductService {
 	 */
 	
 	public boolean saveProduct(String productName,String category,String description,String actualPrice,String quantity,String image) throws DBException, InsertFailedException {
-	if(validation.checkString(request.getParameter("productName"))&&validation.checkString(request.getParameter("category"))&&
-	validation.checkString(request.getParameter("description"))&&validation.checkInt(request.getParameter("quantity"))&&
-	validation.checkDouble(request.getParameter("actualPrice"))&&validation.checkString(request.getParameter("image"))){
+	if(!validation.isEmpty(request.getParameter("productName"))&&!validation.isEmpty(request.getParameter("category"))&&
+	!validation.isEmpty(request.getParameter("description"))&&!validation.isEmpty(request.getParameter("quantity"))&&
+	!validation.isEmpty(request.getParameter("actualPrice"))&&!validation.isEmpty(request.getParameter("image"))){
 		Product product = new Product();
 		product.setName(request.getParameter("productName"));
 		product.setCategory(request.getParameter("category"));
