@@ -129,7 +129,7 @@ public class BidDAO {
 			preparedStatement = this.connection.prepareStatement("SELECT MAX(BID_VALUE) AS MAX_BID_VALUE FROM BID_MASTER GROUP BY PRODUCT_ID HAVING PRODUCT_ID=?");
 			preparedStatement.setInt(1, pid);
 			resultSet = preparedStatement.executeQuery();
-			Bid bid1= new Bid();
+			Bid bid= new Bid();
 			while (resultSet.next()) {
 				 maxBidValue = resultSet.getInt(1);
 			}
@@ -159,9 +159,45 @@ public class BidDAO {
 			e.printStackTrace();
 			throw new DataAccessException("could not access records from BID_MASTER table");
 		}
-
+		
+	public double getTopBidValue(int pid) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		double topBidValue = 0.0F;
+		try {
+			preparedStatement = this.connection
+					.prepareStatement("SELECT MAX(BID_VALUE) AS MAX_BID_VALUE GROUP BY PRODUCT_ID HAVING PRODUCT_ID=?");
+			preparedStatement.setInt(1, pid);
+			resultSet = preparedStatement.executeQuery();
+			topBidValue = resultSet.getDouble(1);
+			return topBidValue;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return topBidValue;
 	}
-	 
 
-
+	public Bid getTopBidder(int pid) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Bid bid = new Bid();
+		double topBidValue = 0.0F;
+		topBidValue = getTopBidValue(pid);
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT * FROM BID_MASTER WHERE BID_VALUE=?");
+			preparedStatement.setDouble(1, topBidValue);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				bid.setBidID(resultSet.getInt(1));
+				bid.setUserID(resultSet.getInt(2));
+				bid.setProductID(resultSet.getInt(3));
+				bid.setBidValue(resultSet.getDouble(4));
+				bid.setStatus(resultSet.getString(5));
+			}
+			return bid;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return bid;
+	}
 }
