@@ -104,17 +104,15 @@ public class BidDAO {
 			preparedStatement = this.connection.prepareStatement("SELECT * FROM BID_MASTER WHERE BID_ID=?");
 			preparedStatement.setInt(1, bid);
 			resultSet = preparedStatement.executeQuery();
-			Bid bid1= new Bid();
-			while (resultSet.next()) {
-				
-				bid1.setBidID(resultSet.getInt(1));
-				bid1.setUserID(resultSet.getInt(2));
-				bid1.setProductID(resultSet.getInt(3));
-				bid1.setBidValue(resultSet.getDouble(4));
-				bid1.setStatus(resultSet.getString(5));
-				
+			Bid bid= new Bid();
+			while (resultSet.next()) {	
+				bid.setBidID(resultSet.getInt(1));
+				bid.setUserID(resultSet.getInt(2));
+				bid.setProductID(resultSet.getInt(3));
+				bid.setBidValue(resultSet.getDouble(4));
+				bid.setStatus(resultSet.getString(5));
 			}
-			return bid1;
+			return bid;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DataAccessException("could not access records from BID_MASTER table");
