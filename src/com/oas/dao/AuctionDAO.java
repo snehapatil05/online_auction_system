@@ -109,17 +109,16 @@ public class AuctionDAO {
 
 	}
 
-	public List<Auction> selectAuctionBySequenceNo(int seqNo) throws DataAccessException {
+	public Auction selectAuctionBySequenceNo(int seqNo) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<Auction> auctions = new ArrayList<>();
 
 		try {
 			preparedStatement = this.connection.prepareStatement("SELECT * FROM AUCTION_MASTER WHERE SEQ_NO=?");
 			preparedStatement.setInt(1, seqNo);
 			resultSet = preparedStatement.executeQuery();
+			Auction auction=new Auction();
 			while (resultSet.next()) {
-				Auction auction=new Auction();
 				auction.setSeqNumber(resultSet.getInt(1));
 				auction.setMinBidValue(resultSet.getDouble(2));
 				auction.setBidStartDate(resultSet.getDate(3));
@@ -127,10 +126,8 @@ public class AuctionDAO {
 				auction.setsellerID(resultSet.getInt(5));
 				auction.setSoldPrice(resultSet.getDouble(6));
 				auction.setStatus(resultSet.getString(7));
-				
-				auctions.add(auction);
 			}
-			return auctions;
+			return auction;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DataAccessException("could not access records from AUCTION_MASTER table");
@@ -138,17 +135,16 @@ public class AuctionDAO {
 
 	}
 	
-	public List<Auction> selectAuctionByProductID(int prodID) throws DataAccessException {
+	public Auction selectAuctionByProductID(int prodID) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<Auction> auctions = new ArrayList<>();
 
 		try {
 			preparedStatement = this.connection.prepareStatement("SELECT * FROM AUCTION_MASTER WHERE PRODUCT_ID=?");
 			preparedStatement.setInt(1, prodID);
 			resultSet = preparedStatement.executeQuery();
+			Auction auction=new Auction();
 			while (resultSet.next()) {
-				Auction auction=new Auction();
 				auction.setSeqNumber(resultSet.getInt(1));
 				auction.setMinBidValue(resultSet.getDouble(2));
 				auction.setBidStartDate(resultSet.getDate(3));
@@ -156,10 +152,8 @@ public class AuctionDAO {
 				auction.setsellerID(resultSet.getInt(5));
 				auction.setSoldPrice(resultSet.getDouble(6));
 				auction.setStatus(resultSet.getString(7));
-				
-				auctions.add(auction);
 			}
-			return auctions;
+			return auction;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DataAccessException("could not access records from AUCTION_MASTER table");
