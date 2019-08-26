@@ -393,7 +393,7 @@ public class UserService {
 		Validation validation=new Validation();
 
 		if(!validation.isEmpty(productID)&&!validation.isEmpty(minBidValue))&&
-			 validation.isValidDate(bidStartDate)&&validation.isValidDate(bidEndDate)){
+			 validation.isStartAuctionDateBeforeCurrentDate(bidStartDate)&&validation.isEndAuctionDateAfterCurrentDate(bidEndDate)){
 
 					Auction auction=new Auction();
 
