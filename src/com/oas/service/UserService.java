@@ -10,6 +10,9 @@ import com.oas.dao.ProductDAO;
 import com.oas.exception.DBException;
 import com.oas.exception.DataAccessException;
 import com.oas.exception.InsertFailedException;
+import com.oas.exception.UserNotFoundException;
+import com.oas.exception.InvalidOldPasswordException;
+import com.oas.exception.UserAlreadyExistException;
 import com.oas.model.Auction;
 import com.oas.model.Bid;
 import com.oas.model.Category;
@@ -31,13 +34,13 @@ public class UserService {
 
 	// User--------------------------------------------------------------------
 
-	public boolean findUsername() throws DataAccessException {
+	public boolean findUsername() throws DataAccessException, UserNotFoundException{
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.checkIfUserExists();
 	}
 	
-	public boolean authenticateUser(String username, String password) throws DataAccessException {
+	public boolean authenticateUser(String username, String password) throws DataAccessException, InvalidOldPasswordException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.checkAuthenticity(username,password);
@@ -62,7 +65,7 @@ public class UserService {
 		this.userDAO.removeUser(uid);
 	}
 
-	public void saveUser(User user) throws DBException, InsertFailedException {
+	public void saveUser(User user) throws DBException, InsertFailedException, UserAlreadyExistException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		this.userDAO.addUser(user);
