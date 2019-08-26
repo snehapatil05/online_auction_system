@@ -1,5 +1,9 @@
 package com.oas.dao;
 
+/*
+ * Class to enable user to talk to database server.
+ */
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,14 +15,24 @@ import com.oas.exception.DataAccessException;
 import com.oas.exception.InsertFailedException;
 import com.oas.model.Product;
 
+/*
+ * It has all the functionalities to be done on product_master table
+ */
 
 public class ProductDAO {
+	
+/*
+ * Establishing connection between product_master table and client server
+ */
 	
 	Connection connection = null;
 	public void setConnection(Connection connection) {
 		this.connection = connection;
 	}
-
+	
+/*
+ * Function created to add a new product inside product_master table 
+ */
 	public void addProduct(Product product) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 		
@@ -40,6 +54,9 @@ public class ProductDAO {
 		}
 	}
 	
+/*
+ * Function created to make changes in the existing product details inside product_master table 
+ */
 	public void updateProduct(Product product) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
@@ -62,6 +79,10 @@ public class ProductDAO {
 		}
 	}
 	
+/*
+ * Function created to delete a product from product_master table 
+ */
+	
 	public void deleteProduct(int pid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
@@ -77,6 +98,9 @@ public class ProductDAO {
 		}
 	}
 	
+/*
+ * Function created to display all products from product_master table 
+ */
 	public List<Product> selectAllProducts() throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -105,7 +129,9 @@ public class ProductDAO {
 		}
 
 	}
-
+/*
+ * Function created to display product details on basis of productID from product_master table 
+ */
 	public Product selectProductByID(int pid) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -132,6 +158,10 @@ public class ProductDAO {
 		}
 
 	}
+	
+/*
+ * Function created to display product details on basis of category from product_master table using categoryID from category_master
+ */
 	public List<Product> selectAllProductsByCategory(int cid) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
