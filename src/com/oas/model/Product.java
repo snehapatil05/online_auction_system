@@ -1,5 +1,9 @@
 package com.oas.model;
 
+/*
+* This Model class is to create connectivity between productDAO and product_master table in DBMS using Getter and Setter methods.
+*/
+
 public class Product {
 	
 	int productID;
