@@ -10,6 +10,7 @@ import com.oas.dao.UserDAO;
 import com.oas.exception.DBException;
 import com.oas.exception.DataAccessException;
 import com.oas.exception.InsertFailedException;
+import com.oas.exception.UserAlreadyExistException;
 import com.oas.model.Bid;
 import com.oas.model.Product;
 import com.oas.model.User;
@@ -42,13 +43,13 @@ public class ProductService {
 	
 	// User--------------------------------------------------------------------
 
-	public List<User> listAllUsers() throws DBException, DataAccessException {
+	public List<User> listAllUsers() throws DBException, DataAccessException, UserAlreadyExistException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.selectAllUsers();
 	}
 
-	public User listUserByID(int id) throws DBException, DataAccessException {
+	public User listUserByID(int id) throws DBException, DataAccessException, UserAlreadyExistException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.selectUserByID(id);
