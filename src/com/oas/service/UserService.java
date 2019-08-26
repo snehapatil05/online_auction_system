@@ -1,5 +1,8 @@
-package com.oas.service;
+package com.oas.serviceWithTransactions;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.oas.dao.UserDAO;
@@ -10,9 +13,6 @@ import com.oas.dao.ProductDAO;
 import com.oas.exception.DBException;
 import com.oas.exception.DataAccessException;
 import com.oas.exception.InsertFailedException;
-import com.oas.exception.UserNotFoundException;
-import com.oas.exception.InvalidOldPasswordException;
-import com.oas.exception.UserAlreadyExistException;
 import com.oas.model.Auction;
 import com.oas.model.Bid;
 import com.oas.model.Category;
@@ -21,7 +21,7 @@ import com.oas.model.User;
 import com.oas.util.DBUtil;
 
 /*
- Service W/O Transactions
+ Service with Transactions
  */
 
 public class UserService {
@@ -34,145 +34,405 @@ public class UserService {
 
 	// User--------------------------------------------------------------------
 
-	public boolean findUsername() throws DataAccessException, UserNotFoundException{
-		DBUtil.open();
-		this.userDAO.setConnection(DBUtil.getConnection());
-		return this.userDAO.checkIfUserExists();
-	}
-	
-	public boolean authenticateUser(String username, String password) throws DataAccessException, InvalidOldPasswordException {
-		DBUtil.open();
-		this.userDAO.setConnection(DBUtil.getConnection());
-		return this.userDAO.checkAuthenticity(username,password);
-	}
-	
-	public List<User> listAllUsers() throws DBException, DataAccessException, UserNotFoundException {
-		DBUtil.open();
-		this.userDAO.setConnection(DBUtil.getConnection());
-		return this.userDAO.selectAllUsers();
-	}
-	
+	public List<User> listAllUsers() throws DBException, DataAccessException, SQLException {
 
-	public User listUserByID(int id) throws DBException, DataAccessException, UserNotFoundException {
+		List<User> allUsers = new ArrayList<User>();
+
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
-		return this.userDAO.selectUserByID(id);
+
+		try {
+			DBUtil.beginTx();
+			allUsers = this.userDAO.selectAllUsers();
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return allUsers;
 	}
 
-	public void deleteUser(int uid) throws DBException, InsertFailedException {
+	public User listUserByID(int id) throws DBException, DataAccessException, SQLException {
+
+		User user = new User();
+
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
-		this.userDAO.removeUser(uid);
+
+		try {
+			DBUtil.beginTx();
+			user = this.userDAO.selectUserByID(id);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return user;
+
 	}
 
-	public void saveUser(User user) throws DBException, InsertFailedException, UserAlreadyExistException {
+	public void deleteUser(int uid) throws DBException, InsertFailedException, SQLException {
+
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
-		this.userDAO.addUser(user);
+
+		try {
+			DBUtil.beginTx();
+			this.userDAO.removeUser(uid);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
-	public void editUser(User user) throws DBException, InsertFailedException {
+	public boolean saveUser(String name, String dob, String email, String phoneNumber, String username, String password, String address, String userType, String walletAmount)
+	 		throws DBException, InsertFailedException, SQLException {
+				if(validation.checkString(name)&&
+					validation.checkDate(dob)&&
+				  validation.verifyEmail(email)&&
+					validation.checkifNumber(phoneNumber)&&
+					validation.checkUsername(username)&&
+					validation.checktring(password)&&
+					validation.checkString(address)&&
+					validation.checkUserType(userType)&&
+					validation.checkAmount(walletAmount)){
+
+					User user= new User();
+							ser.setName(name);
+					    user.setDob(convertDate(dob));
+					    user.setEmail(email);
+					    user.setPhoneNumber(phoneNumber);
+					    user.setUserName(username);
+					    ser.setPassword(password);
+					    user.setAddress(address);
+					    user.setUserType(userType);
+					    user.setWalletAmount(Double.parseDouble(walletAmount));
+
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
-		this.userDAO.updateUser(user);
+
+		try {
+			DBUtil.beginTx();
+			this.userDAO.addUser(user);
+			DBUtil.commitTx();
+			return true;
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+			return false;
+		}
+
+	}else{
+		return false;
 	}
+	}
+
+	public void editUser(User user) throws DBException, InsertFailedException, SQLException {
+
+		DBUtil.open();
+		this.userDAO.setConnection(DBUtil.getConnection());
+
+		try {
+			DBUtil.beginTx();
+			this.userDAO.updateUser(user);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+	}
+
 
 	// Category-----------------------------------------------------------------------
 
-	public List<Category> listAllCategories() throws DBException, DataAccessException {
+	public List<Category> listAllCategories() throws DBException, DataAccessException, SQLException {
+
+		List<Category> allCategories = new ArrayList<Category>();
+
 		DBUtil.open();
 		this.categoryDAO.setConnection(DBUtil.getConnection());
-		return this.categoryDAO.selectAllCategories();
+
+		try {
+			DBUtil.beginTx();
+			allCategories = this.categoryDAO.selectAllCategories();
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return allCategories;
 	}
 
-	public Category listCategoryByID(int id) throws DBException, DataAccessException {
+	public Category listCategoryByID(int id) throws DBException, DataAccessException, SQLException {
+
+		Category category = new Category();
+
 		DBUtil.open();
 		this.categoryDAO.setConnection(DBUtil.getConnection());
-		return this.categoryDAO.selectCategoryByID(id);
+
+		try {
+			DBUtil.beginTx();
+			category = this.categoryDAO.selectCategoryByID(id);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return category;
+
 	}
 
-	public void deleteCategory(int uid) throws DBException, InsertFailedException {
+	public void deleteCategory(int uid) throws DBException, InsertFailedException, SQLException {
+
 		DBUtil.open();
 		this.categoryDAO.setConnection(DBUtil.getConnection());
-		this.categoryDAO.removeCategory(uid);
+
+		try {
+			DBUtil.beginTx();
+			this.categoryDAO.removeCategory(uid);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
-	public void saveCategory(Category category) throws DBException, InsertFailedException {
+	public void saveCategory(Category category) throws DBException, InsertFailedException, SQLException {
+
 		DBUtil.open();
 		this.categoryDAO.setConnection(DBUtil.getConnection());
-		this.categoryDAO.addCategory(category);
+
+		try {
+			DBUtil.beginTx();
+			this.categoryDAO.addCategory(category);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
-	public void editCategory(Category category) throws DBException, InsertFailedException {
+	public void editCategory(Category category) throws DBException, InsertFailedException, SQLException {
+
 		DBUtil.open();
 		this.categoryDAO.setConnection(DBUtil.getConnection());
-		this.categoryDAO.updateCategory(category);
+
+		try {
+			DBUtil.beginTx();
+			this.categoryDAO.updateCategory(category);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
+
 
 	// Bid-------------------------------------------------------------------------------
 
 	public void saveBid(Bid bid) throws DBException, InsertFailedException {
 		DBUtil.open();
 		this.bidDAO.setConnection(DBUtil.getConnection());
-		this.bidDAO.addBid(bid);
+
+		try {
+			DBUtil.beginTx();
+			this.bidDAO.addBid(bid);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
 	public void editBid(Bid bid) throws DBException, InsertFailedException {
 		DBUtil.open();
 		this.bidDAO.setConnection(DBUtil.getConnection());
-		this.bidDAO.updateBid(bid);
+
+		try {
+			DBUtil.beginTx();
+			this.bidDAO.updateBid(bid);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
 	public Bid listBidByID(int id) throws DBException, DataAccessException {
+		Bid bid = new Bid();
+
 		DBUtil.open();
 		this.bidDAO.setConnection(DBUtil.getConnection());
-		return this.bidDAO.selectBidByID(id);
+
+		try {
+			DBUtil.beginTx();
+			bid = this.bidDAO.selectBidByID(id);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return bid;
 	}
+
 
 	// Product-----------------------------------------------------------------------
 
-	public List<Product> listAllProducts() throws DBException, DataAccessException {
+	public List<Product> listAllProducts() throws DBException, DataAccessException, SQLException {
+
+		List<Product> allProducts = new ArrayList<Product>();
+
 		DBUtil.open();
 		this.productDAO.setConnection(DBUtil.getConnection());
-		return this.productDAO.selectAllProducts();
+
+		try {
+			DBUtil.beginTx();
+			allProducts = this.productDAO.selectAllProducts();
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return allProducts;
 	}
 
-	public Product listProductByID(int id) throws DBException, DataAccessException{
+	public Product listProductByID(int id) throws DBException, DataAccessException, SQLException {
+
+		Product product = new Product();
+
 		DBUtil.open();
 		this.productDAO.setConnection(DBUtil.getConnection());
-		return this.productDAO.selectProductByID(id);
-	}
-		
-	//Auction------------------------------------------------------------------------
-	
-	public List<Auction> listAllAuctions() throws DBException, DataAccessException {
-		DBUtil.open();
-		this.auctionDAO.setConnection(DBUtil.getConnection());
-		return this.auctionDAO.selectAllAuctions();
+
+		try {
+			DBUtil.beginTx();
+			product = this.productDAO.selectProductByID(id);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return product;
+
 	}
 
-	public Auction listAuctionByID(int id) throws DBException, DataAccessException {
+
+	// Auction------------------------------------------------------------------------
+
+	public List<Auction> listAllAuctions() throws DBException, DataAccessException, SQLException {
+
+		List<Auction> allAuctions = new ArrayList<Auction>();
+
 		DBUtil.open();
-		this.auctionDAO.setConnection(DBUtil.getConnection());
-		return this.auctionDAO.selectAuctionByID(id);
+		this.auctionsDAO.setConnection(DBUtil.getConnection());
+
+		try {
+			DBUtil.beginTx();
+			allAuctions = this.auctionsDAO.selectAllAuctions();
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return allAuctions;
 	}
 
-	public void deleteAuction(int uid) throws DBException, InsertFailedException {
+	public Auction listAuctionByID(int id) throws DBException, DataAccessException, SQLException {
+
+		Auction auctions = new Auction();
+
 		DBUtil.open();
-		this.auctionDAO.setConnection(DBUtil.getConnection());
-		this.auctionDAO.removeAuction(uid);
+		this.auctionsDAO.setConnection(DBUtil.getConnection());
+
+		try {
+			DBUtil.beginTx();
+			auctions = this.auctionsDAO.selectAuctionByID(id);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+		return auctions;
+
 	}
 
-	public void saveAuction(Auction auction) throws DBException, InsertFailedException {
+	public void deleteAuction(int uid) throws DBException, InsertFailedException, SQLException {
+
 		DBUtil.open();
-		this.auctionDAO.setConnection(DBUtil.getConnection());
-		this.auctionDAO.addAuction(auction);
+		this.auctionsDAO.setConnection(DBUtil.getConnection());
+
+		try {
+			DBUtil.beginTx();
+			this.auctionsDAO.removeAuction(uid);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
 	}
 
-	public void editAuction(Auction auction) throws DBException, InsertFailedException {
-		DBUtil.open();
-		this.auctionDAO.setConnection(DBUtil.getConnection());
-		this.auctionDAO.updateAuction(auction);
+	public boolean saveAuction(String productID,String minBidValue,String bidStartDate,String bidEndDate) throws DBException, InsertFailedException, SQLException {
+		Validation validation=new Validation();
+
+		if(validation.checkString(productID)&&validation.checkString(minBidValue))&&
+			 validation.checkDate(bidStartDate)&&validation.checkDate(bidEndDate)){
+
+					Auction auction=new Auction();
+
+					auction.setProductID(productID);
+					auction.setMinBidValue(minBidValue);
+					auction.setBidStartDate(bidStartDate);
+					auction.setBidEndDate(bidEndDate);
+
+				DBUtil.open();
+				this.auctionsDAO.setConnection(DBUtil.getConnection());
+
+				try {
+					DBUtil.beginTx();
+					this.auctionsDAO.addAuction(auction);
+					DBUtil.commitTx();
+					return true;
+
+				} catch (SQLException e) {
+					System.out.println("Transaction is being rolled back due to SQLException!");
+					DBUtil.rollbackTx();
+					return false;
+		}
+	}else{
+		return false;
 	}
-	
+
 }
+	public void editAuction(Auction auctions) throws DBException, InsertFailedException, SQLException {
+
+		DBUtil.open();
+		this.auctionsDAO.setConnection(DBUtil.getConnection());
+
+		try {
+			DBUtil.beginTx();
+			this.auctionsDAO.updateAuction(auctions);
+			DBUtil.commitTx();
+
+		} catch (SQLException e) {
+			System.out.println("Transaction is being rolled back due to SQLException!");
+			DBUtil.rollbackTx();
+		}
+	}
