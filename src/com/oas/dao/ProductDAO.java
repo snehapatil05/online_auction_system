@@ -132,6 +132,33 @@ public class ProductDAO {
 		}
 
 	}
+	public List<Product> selectAllProductsByCategory(int cid) throws DataAccessException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Product> products = new ArrayList<>();
+	
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT * FROM PRODUCT_MASTER WHERE CATEGORY_ID=?");
+			preparedStatement.setInt(1, cid);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Product product= new Product();
+				product.setProductID(resultSet.getInt(1));
+				product.setName(resultSet.getString(2));
+				product.setCatgory(resultSet.getInt(3));
+				product.setDescription(resultSet.getString(4));
+				product.setActualPrice(resultSet.getDouble(5));
+				product.setQuantity(resultSet.getInt(6));
+				product.setSellerID(resultSet.getInt(7));
+				
+				products.add(product);
+			}
+			return products;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataAccessException("could not access records from PRODUCT_MASTER table");
+		}
 
+	}
 
 }
