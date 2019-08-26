@@ -100,11 +100,9 @@ public class CategoryDAO {
 			resultSet = preparedStatement.executeQuery();
 			Category category= new Category();
 			while (resultSet.next()) {
-				
 				category.setCategoryID(resultSet.getInt(1));
 				category.setName(resultSet.getString(2));
 				category.setDescription(resultSet.getString(3));
-				
 			}
 			return category;
 		} catch (SQLException e) {
