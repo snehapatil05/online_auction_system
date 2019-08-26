@@ -2,6 +2,10 @@ package com.oas.model;
 
 import java.sql.Date;
 
+/*
+* This Model class is to create connectivity between auctionDAO and auction_master table in DBMS using Getter and Setter methods.
+*/
+
 public class Auction {
 	
 	int seqNumber;
