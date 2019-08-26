@@ -19,9 +19,15 @@ public class DBUtil {
 	}
 	
 	public static void open() throws DBException {
+		InputStream inputStream = null;
+		Properties properties = null;
 		try {
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			DBUtil.connection = DriverManager.getConnection("jdbc:derby://localhost:4444/C:/DB/training");
+			inputStream = new FileInputStream("C://HSBC/online_auction_system/resources/config.properties");
+			properties = new Properties();
+			properties.load(inputStream);
+			Class.forName(properties.getProperty("derby.driver"));
+			String url = properties.getProperty("derby.connection.url")+";user="+properties.getProperty("derby.username")+";password="+properties.getProperty("derby.password");
+			DBUtil.connection = DriverManager.getConnection(url);
 			System.out.println("Connection Established");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -29,9 +35,19 @@ public class DBUtil {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DBException("URL is incorrect!!");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
 	public static void beginTx() throws DBException {
 		try {
 			DBUtil.connection.setAutoCommit(false);
