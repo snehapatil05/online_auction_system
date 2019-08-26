@@ -46,14 +46,14 @@ public class UserService {
 		return this.userDAO.checkAuthenticity(username,password);
 	}
 	
-	public List<User> listAllUsers() throws DBException, DataAccessException {
+	public List<User> listAllUsers() throws DBException, DataAccessException, UserNotFoundException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.selectAllUsers();
 	}
 	
 
-	public User listUserByID(int id) throws DBException, DataAccessException {
+	public User listUserByID(int id) throws DBException, DataAccessException, UserNotFoundException {
 		DBUtil.open();
 		this.userDAO.setConnection(DBUtil.getConnection());
 		return this.userDAO.selectUserByID(id);
