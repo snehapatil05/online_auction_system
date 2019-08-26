@@ -130,10 +130,36 @@ public class ProductService {
 	 * Passing object of Product as a parameter 
 	 */
 	
-	public void saveProduct(Product product) throws DBException, InsertFailedException {
+	public boolean saveProduct(String productName,String category,String description,String actualPrice,String quantity,String image) throws DBException, InsertFailedException {
+	if(validation.checkString(request.getParameter("productName"))&&validation.checkString(request.getParameter("category"))&&
+	validation.checkString(request.getParameter("description"))&&validation.checkInt(request.getParameter("quantity"))&&
+	validation.checkDouble(request.getParameter("actualPrice"))&&validation.checkString(request.getParameter("image"))){
+		Product product = new Product();
+		product.setName(request.getParameter("productName"));
+		product.setCategory(request.getParameter("category"));
+		product.setDescription(request.getParameter("description"));
+		product.setActualPrice(request.getParameter("actualPrice"));
+		product.setQuantity(request.getParameter("quantity"));
+		product.setImage(request.getParameter("image"));
+
 		DBUtil.open();
-		this.productDAO.setConnection(DBUtil.getConnection());
-		this.productDAO.addProduct(product);
+			this.userDAO.setConnection(DBUtil.getConnection());
+
+			try {
+				DBUtil.beginTx();
+				this.userDAO.addUser(user);
+				DBUtil.commitTx();
+				return true;
+
+			} catch (SQLException e) {
+				System.out.println("Transaction is being rolled back due to SQLException!");
+				DBUtil.rollbackTx();
+				return false;
+			}
+
+		}else{
+			return false;
+		}
 	}
 
 }
