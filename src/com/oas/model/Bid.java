@@ -1,5 +1,10 @@
 package com.oas.model;
 
+/*
+* This Model class is to create connectivity between bidDAO and bid_master table in DBMS using Getter and Setter methods.
+*/
+
+
 public class Bid {
 	int bidID;
 	int userID;
