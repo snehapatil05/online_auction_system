@@ -161,4 +161,19 @@ public class AuctionDAO {
 
 	}
 	
+	public void closeAuctionByProductId(int pid) throws DataAccessException {
+		
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = this.connection.prepareStatement("UPDATE AUCTION_MASTER SET STATUS=? WHERE PRODUCT_ID=?");
+			preparedStatement.setString(1, "AUCTIONCLOSED");
+			preparedStatement.setInt(2, pid);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataAccessException("could not access records from AUCTION_MASTER table");
+		}
+
+	}
+	
 }
