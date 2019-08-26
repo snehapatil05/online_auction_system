@@ -115,17 +115,16 @@ public class UserDAO {
 
 	}
 
-	public List<User> selectUserByID(int id) throws DataAccessException {
+	public User selectUserByID(int id) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<User> users = new ArrayList<>();
-
 		try {
 			preparedStatement = this.connection.prepareStatement("SELECT * FROM USER_MASTER WHERE UID=?");
 			preparedStatement.setInt(1, id);
 			resultSet = preparedStatement.executeQuery();
+			User user= new User();
 			while (resultSet.next()) {
-				User user= new User();
+				
 				user.setUserID(resultSet.getInt(1));
 				user.setName(resultSet.getString(2));
 				user.setDob(resultSet.getDate(3));
@@ -136,11 +135,8 @@ public class UserDAO {
 				user.setAddress(resultSet.getString(8));
 				user.setUserType(resultSet.getString(9));
 				user.setWalletAmount(resultSet.getDouble(10));
-				
-				users.add(user);
-
 			}
-			return users;
+			return user;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DataAccessException("could not access records from USER_MASTER table");
@@ -148,6 +144,56 @@ public class UserDAO {
 
 	}
 
+	public boolean checkIfUserExists(String name) throws DataAccessException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT PASSWORD FROM USER_MASTER WHERE USER_NAME=?");
+			preparedStatement.setString(1, name);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()==false) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataAccessException("could not access records from USER_MASTER table");
+		}
+	}
+
+	public boolean checkAuthenticity(String name, String password) throws DataAccessException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		String passwordFromDB= null;
+		StringBuilder hash = new StringBuilder();
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT PASSWORD FROM USER_MASTER WHERE USER_NAME=?");
+			preparedStatement.setString(1, name);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				passwordFromDB= resultSet.getString(1);
+			}
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			byte[] hashedBytes = sha.digest(password.getBytes());
+			char [] digits = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+			for(int idx = 0; idx < hashedBytes.length; ++idx) {
+				byte b= hashedBytes[idx];
+				hash.append(digits[(b & 0xf0) >> 4]);
+				hash.append(digits[b & 0xf0]);
+			}
+			if(passwordFromDB.equals(password)) {
+				return true;
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataAccessException("could not access records from USER_MASTER table");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 
 }
