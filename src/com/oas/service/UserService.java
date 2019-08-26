@@ -91,15 +91,15 @@ public class UserService {
 
 	public boolean saveUser(String name, String dob, String email, String phoneNumber, String username, String password, String address, String userType, String walletAmount)
 	 		throws DBException, InsertFailedException, SQLException {
-				if(validation.checkString(name)&&
-					validation.checkDate(dob)&&
-				  validation.verifyEmail(email)&&
+				if(!qvalidation.isEmpty(name)&&
+					validation.isValidDate(dob)&&
+				        validation.isEmailUnique(email)&&
 					validation.checkifNumber(phoneNumber)&&
-					validation.checkUsername(username)&&
-					validation.checktring(password)&&
-					validation.checkString(address)&&
-					validation.checkUserType(userType)&&
-					validation.checkAmount(walletAmount)){
+					validation.isUsernameUnique(username)&&
+					!validation.isEmpty(password)&&
+					!validation.isEmpty(address)&&
+					!validation.isEmpty(userType)&&
+					!validation.isEmpty(walletAmount)){
 
 					User user= new User();
 							ser.setName(name);
@@ -392,8 +392,8 @@ public class UserService {
 	public boolean saveAuction(String productID,String minBidValue,String bidStartDate,String bidEndDate) throws DBException, InsertFailedException, SQLException {
 		Validation validation=new Validation();
 
-		if(validation.checkString(productID)&&validation.checkString(minBidValue))&&
-			 validation.checkDate(bidStartDate)&&validation.checkDate(bidEndDate)){
+		if(!validation.isEmpty(productID)&&!validation.isEmpty(minBidValue))&&
+			 validation.isValidDate(bidStartDate)&&validation.isValidDate(bidEndDate)){
 
 					Auction auction=new Auction();
 
