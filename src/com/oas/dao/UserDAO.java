@@ -209,4 +209,41 @@ public class UserDAO {
 		return generatedPassword;
 	}
 	
+	public boolean checkIfEmailExists(String email) {
+		boolean emailExists=false;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT EMAIL FROM USER_MASTER");
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				String getEmail=resultSet.getString(1);
+				if(getEmail.equals(email)) {
+					emailExists = true;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return emailExists;
+	}
+	
+	public boolean checkIfPhoneNumberExists(String phoneNo) {
+		boolean phoneNoExists=false;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = this.connection.prepareStatement("SELECT PHONE_NUMBER FROM USER_MASTER");
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				String getPhoneNo=resultSet.getString(1);
+				if(getPhoneNo.equals(phoneNo)) {
+					phoneNoExists = true;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return phoneNoExists;
+	}
 }
