@@ -21,6 +21,15 @@ public class ProductService {
 	UserDAO userDAO = new UserDAO();
 	BidDAO bidDAO = new BidDAO();
 	ProductDAO productDAO = new ProductDAO();
+	CategoryDAO categoryDAO = new CategoryDAO();
+	
+	// Category-----------------------------------------------------------------------
+	
+	public List<Category> listAllByCategory() throws DBException, DataAccessException {
+		DBUtil.open();
+		this.CategoryDAO.setConnection(DBUtil.getConnection());
+		return this.CategoryDAO.selectAllByCategory();
+	}
 	
 	// Bid-------------------------------------------------------------------------------
 	
