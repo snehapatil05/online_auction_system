@@ -1,5 +1,9 @@
 package com.oas.dao;
 
+/*
+ * Class to enable user to talk to database server.
+ */
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,16 +19,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /*
- 
+ * It has all the functionalities to be done on user_master table
  */
 
 public class UserDAO {
 	
+/*
+ * Establishing connection between user_master table and client server
+ */
 	Connection connection = null;
 	public void setConnection(Connection connection) {
 		this.connection = connection;
 	}
 
+/*
+ * Function created to add a new user inside user_master table 
+ */
 	public void addUser(User user) throws InsertFailedException, UserAlreadyExistException {
 		PreparedStatement preparedStatement = null;
 		
@@ -49,6 +59,10 @@ public class UserDAO {
 		}
 	}
 	
+	
+/*
+ * Function created to make changes in the existing user details inside user_master table 
+ */
 	public void updateUser(User user) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
@@ -74,6 +88,10 @@ public class UserDAO {
 		}
 	}
 	
+	
+/*
+ * Function created to delete a user from user_master table 
+ */
 	public void deleteUser(int uid) throws InsertFailedException {
 		PreparedStatement preparedStatement = null;
 	
@@ -89,6 +107,10 @@ public class UserDAO {
 		}
 	}
 	
+	
+/*
+ * Function created to display all users from user_master table 
+ */
 	public List<User> selectAllUsers() throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -120,6 +142,10 @@ public class UserDAO {
 		}
 
 	}
+		
+/*
+ * Function created to display user details on basis of userID from user_master table 
+ */
 	public User selectUserByID(int id) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -149,6 +175,11 @@ public class UserDAO {
 
 	}
 
+		
+/*
+ * Function created for validation of users existence in user_master table at time of registration and if user name is found in 
+ * database then function does not allow user to register with same name 
+ */
 	public boolean checkIfUserExists(String name) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -167,6 +198,12 @@ public class UserDAO {
 			throw new DataAccessException("could not access records from USER_MASTER table");
 		}
 	}
+
+		
+/*
+ * Function created for authentication of user by checking if the input user and its registered password match user_master table
+ * at time of login 
+ */
 
 	public boolean checkAuthenticity(String name, String password) throws DataAccessException {
 		PreparedStatement preparedStatement = null;
@@ -192,7 +229,9 @@ public class UserDAO {
 		return false;
 	}
 	
-	// Encrypting password using SHA-512 algorithm
+/*
+ * Encrypting password using SHA-512 algorithm
+ */
 	public String get_SHA_512_SecurePassword(String passwordToHash) {
 		String generatedPassword = null;
 		try {
@@ -209,6 +248,10 @@ public class UserDAO {
 		return generatedPassword;
 	}
 	
+/*
+ * Function created for validation of users email existence in user_master table at time of registration and if user email is found in 
+ * database then function does not allow user to register with same email 
+ */
 	public boolean checkIfEmailExists(String email) {
 		boolean emailExists=false;
 		PreparedStatement preparedStatement = null;
@@ -227,6 +270,11 @@ public class UserDAO {
 		}
 		return emailExists;
 	}
+	
+/*
+ * Function created for validation of users phoneNo existence in user_master table at time of registration and if user phoneNo is found in 
+ * database then function does not allow user to register with same phoneNo 
+ */
 	
 	public boolean checkIfPhoneNumberExists(String phoneNo) {
 		boolean phoneNoExists=false;
