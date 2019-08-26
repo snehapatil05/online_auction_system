@@ -1,5 +1,10 @@
 package com.oas.model;
 
+/*
+* This Model class is to create connectivity between categoryDAO and category_master table in DBMS using Getter and Setter methods.
+*/
+
+
 public class Category {
 	
 	int categoryID;
